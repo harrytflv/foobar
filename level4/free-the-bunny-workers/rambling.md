@@ -2,7 +2,7 @@
 
 Given integer n and k where 0 <= k <= n, return n arrays of integers satisfying:
 * Any combination of k arrays has all integers from 0 to M, where M is the maximum value of all integers in the returned n arrays.
-* Any combination of k-1 arrays is missing some integers from 0 to M.
+* Any combination of k-1 or less arrays is missing some integers from 0 to M.
 * M is as small as possible.
 * n arrays are lexicographically least.
 
