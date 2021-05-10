@@ -1,3 +1,40 @@
+from itertools import permutations
+
+def solution(times, times_limit):
+    number_of_points, start, bulkhead = len(times), 0, len(times)-1
+
+    def path_to_bunnies(path):
+        points = path[1:-1]
+        points.sort()
+        return map(lambda x: x-1, points)
+
+    # https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+    for k in range(number_of_points):
+        for i in range(number_of_points):
+            for j in range(number_of_points):
+                times[i][j] = min(times[i][k] + times[k][j], times[i][j])
+    for point_i in range(number_of_points):
+        if times[point_i][point_i] < 0:
+            return path_to_bunnies(range(number_of_points))
+
+    curr_best_path = [start]
+    for path in permutations(range(number_of_points)[1:-1]):
+        curr_times, curr_path = 0, [start]
+        for point_i in path:
+            if curr_times + times[curr_path[-1]][point_i] + times[point_i][bulkhead] <= times_limit:
+                curr_times += times[curr_path[-1]][point_i]
+                curr_path.append(point_i)
+                if len(curr_path) == number_of_points-1:
+                    break
+            else:
+                break
+        if len(curr_path) > len(curr_best_path):
+            curr_best_path = curr_path
+    curr_best_path.append(bulkhead)
+
+    return path_to_bunnies(curr_best_path)
+
+
 def slow_solution(times, times_limit):
     # A footprint for a vertex along the path is the set of visited vertices
     # when visiting that vertex.
@@ -42,7 +79,6 @@ def slow_solution(times, times_limit):
             new_visted[vertex] = new_footprint
             return Path(self.path, vertex, self.sum_of_weights + times[self.curr_vertex][vertex], new_visted)
 
-
     paths, unfinished_paths = [], [Path([], 0, 0, {0: FootPrint({0}, 0)})]
     while len(unfinished_paths):
         curr_path = unfinished_paths.pop()
@@ -86,8 +122,18 @@ def main():
     t.add_test_case([], [[0, 1, 10], [10, 0, 1], [10, 10, 0]], 0)
     t.add_test_case([0], [[0, 1, 10], [10, 0, 1], [10, 10, 0]], 2)
     t.add_test_case([0], [[0, 1, 10], [-2, 0, 10], [10, 10, 0]], 0)
+    t.add_test_case([0, 1], [[0, 10, 0, 10], [10, 0, 10, 0], [10, 0, 0, 10], [10, 10, 10, 0]], 0)
     t.add_test_case([1, 2], [[0, 2, 2, 2, -1], [9, 0, 2, 2, -1], [9, 3, 0, 2, -1], [9, 3, 2, 0, -1], [9, 3, 2, 2, 0]], 1)
     t.add_test_case([0, 1], [[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0]], 3)
+    t.add_test_case([0, 1, 2, 3, 4], [
+        [0, 12, 4, 1, 2, 3, 3],
+        [0, 0, 3, 8, 3, 7, 8],
+        [1, 14, 0, 2, 6, 4, 2],
+        [6, 1, 3, 0, 9, 7, 2],
+        [0, 2, 4, 1, 0, 3, 6],
+        [8, 23, 4, 9, 2, 0, 3],
+        [6, 8, 6, 7, 2, 3, 0],
+    ], 999)
     t.run()
 
 from datetime import datetime
@@ -132,7 +178,7 @@ def log(*args):
             print(args)
 log.limit = 20
 log.counter = 0
-log.toggle = False
+log.toggle = True
 
 if __name__ == "__main__":
     main()

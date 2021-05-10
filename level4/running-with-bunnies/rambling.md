@@ -6,7 +6,10 @@ Graph G is a fully-connected directed graph and is given in adjecency matrix, wi
 
 Basically it comes down to brute force every possible path and pick the best one.
 
-A naive case of this problem is graph with negative cycles, a cycle with negative total weights. If such cycle exists, we can travel as much as needed along the cycle, thus ignoring the weight budget and visit all the vertices. Ask Google about finding negative cycles, and he will tell you a story about Bellman–Ford.
+One way to enumerate all the paths is similar to the BFS approach in https://leetcode.com/problems/shortest-path-visiting-all-nodes/.
 
-Given the naive case solved, we can assume this graph is free of negative cycles. With that in mind, it is intuitive that one cannot infinitely traverse the graph without breaking the total weight limit. In other words, the number of paths from source to destination is limited. Considering that the size of the graph for this specific problem is relatively small, at this point, we can iterate through all paths from source to destination, compare them and pick our favorite. A special case worthy of notice is zero weight cycle. As we traverse in the graph, we need to implement some validation to prevent us from infinitly looping along zero cycles. In fact, this very same check can be used for detecting negative cycles, 
+My approach is to use Floyd Warshall algorithm to calculate the shortest distance between each vertices, then think of each permutation of vertices as an order of unique visited vertices. For example, for the path A-B-C-B-D, the order of unique visited vertices corresponds to permutation ABCD. This result of running this algorithm can also be used to check the existence of negative cycles, which means that we can visit all vertices given any time limit. After than, enumerate all permutations with shortest path for each step, we can find the best path that suites the requirement.
 
+## TODO
+
+Prove that this problem is NP-complete. It feels relavant to the Tranvelling Salesman Problem.
