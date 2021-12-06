@@ -11,6 +11,8 @@ def main():
     t = Test(solution)
     t.add_test_case(1, 3)
     t.add_test_case(2, 5)
+    t.add_test_case(3, 6)
+    t.add_test_case(4, 7)
     t.add_test_case(487067745, 200)
     t.run()
 
